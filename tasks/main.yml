@@ -33,7 +33,7 @@
         failed_when: "{{nc_upgrade_check_versions.rc}} == 3"
 
       - fail: msg="{{nc_upgrade_check_versions.stdout}}"
-        when: "{{nc_upgrade_check_versions.rc}} == 2"
+        when: nc_upgrade_check_versions.rc == 2
 
     rescue:
       - name: "[NC-Upgrade] - Remove nextcloud archive files"
@@ -100,5 +100,5 @@
     - name: "[NC-Post-Upgrade]- Clean old nextcloud instance."
       file: name="{{nextcloud_webroot_old}}" state=absent
       when: nextcloud_upgrade_clean
-    when: "{{nc_upgrade_check_versions.rc}} == 0"
+    when: nc_upgrade_check_versions.rc == 0
   when: not (nc_instance_status.versionstring == nextcloud_version)

@@ -16,7 +16,7 @@
 
 - block:
   - name: "[NC-Upgrade] - Unzip is installed"
-    package: name=unzip state=installed
+    package: name=unzip state=present
 
   - name: "Download & extract new Nextcloud version to /tmp."
     unarchive:

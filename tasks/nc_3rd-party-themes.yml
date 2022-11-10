@@ -1,0 +1,22 @@
+---
+- name: "[NC - 3rd party themes ] List themes in old instance."
+  command: find . -maxdepth 1 -mindepth 1 -type d
+  args:
+    chdir: "{{nextcloud_www_dir}}_old/themes/"
+  changed_when: false
+  register: nc_themes_old
+
+- name: "[NC - 3rd party themes ] List themes in new instance."
+  command: find . -maxdepth 1 -mindepth 1 -type d
+  args:
+    chdir: "{{nextcloud_www_dir}}/themes/"
+  changed_when: false
+  register: nc_themes_new
+
+- name: "[NC - 3rd party themes ] Restore the old themes in the new instance."
+  command: cp -r {{item}} {{nextcloud_www_dir}}/themes/
+  args:
+    chdir: "{{nextcloud_www_dir}}_old/themes/"
+  when: (nc_themes_old.stdout_lines is defined) and (nc_themes_new.stdout_lines is defined) and (item not in nc_themes_new.stdout_lines)
+  with_items: "{{nc_themes_old.stdout_lines}}"
+# FIXME: crash here when skipping the file. need improvment for idempotence

@@ -42,6 +42,9 @@
 - include: "{{ role_path }}/tasks/nc_3rd-party-apps.yml"
   when: nextcloud_restore_3rdparty_apps
 
+- include: "{{ role_path }}/tasks/nc_3rd-party-themes.yml"
+  when: nextcloud_restore_3rdparty_themes
+  
 - name: "[NC] - Set temporary permissions for command line installation."
   file:
     path: "{{ nextcloud_webroot }}"

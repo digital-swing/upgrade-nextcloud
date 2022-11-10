@@ -57,7 +57,13 @@
 
     - name: "[NC-Upgrade] - webserver is stopped"
       service: name={{nextcloud_websrv}} state=stopped
-
+    
+    - name: "[NC-Upgrade] - disable CRON"
+      cron:
+        name: nextcloud cronjob
+        job: php -f /var/www/nextcloud/cron.php > /dev/null 2>&1
+        disabled: yes
+        
     - block:
         - include: tasks/nc_inst_upgrade.yml
       rescue:
@@ -85,6 +91,12 @@
       args:
         chdir: "{{ nextcloud_webroot }}"
 
+    - name: "[NC-Upgrade] - enable CRON"
+      cron:
+        name: nextcloud cronjob
+        job: php -f /var/www/nextcloud/cron.php > /dev/null 2>&1
+        disabled: no
+        
     - name: "[NC-Post-Upgrade]- Clean old nextcloud instance."
       file: name="{{nextcloud_webroot_old}}" state=absent
       when: nextcloud_upgrade_clean

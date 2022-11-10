@@ -49,7 +49,7 @@
         chdir: "{{ nextcloud_webroot }}"
 
     - block:
-        - include: tasks/nc_backup.yml
+        - import_tasks: nc_backup.yml
       rescue:
         - name: "[NC-Rescue] - Remove nextcloud backup directory."
           file: path={{nextcloud_backup_dir}} state=absent
@@ -65,9 +65,9 @@
         disabled: yes
         
     - block:
-        - include: tasks/nc_inst_upgrade.yml
+        - import_tasks: nc_inst_upgrade.yml
       rescue:
-        - include: tasks/nc_rescue.yml
+        - import_tasks: nc_rescue.yml
         - fail: msg="Upgrade installation failed."
     - name: "[NC-Upgrade] - webserver is started"
       service: name={{nextcloud_websrv}} state=started
@@ -82,7 +82,7 @@
         - assert:
             that: "'update your PHP version' not in nc_upgrade_result.stdout"
       rescue:
-        - include: tasks/nc_rescue.yml
+        - import_tasks: nc_rescue.yml
         - fail: msg="{{nc_upgrade_result.stdout_lines}}"
 
     - name: "[NC-Upgrade] - Nextcloud is not in maintenance mode."
